@@ -1,0 +1,6 @@
+.Python
+env/
+build/
+setting.json
+*.pyc
+*vscode
