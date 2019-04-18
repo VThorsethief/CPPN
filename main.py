@@ -1,5 +1,5 @@
 #%% Setup
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import numpy as np
 import time
 from scipy import signal
@@ -8,15 +8,7 @@ from scipy import signal
 # for x in range(25):
     # print(signal.gausspulse(x))
 # print(signal.sawtooth(1))
-num_sensors = 9
-num_hidden = 4
-num_of_legs = 6
-knees = 2
 
-test_vector = [np.zeros((num_sensors, num_hidden)), \
-    np.zeros((num_hidden, num_hidden)),
-    np.zeros((num_hidden, num_of_legs, knees))]
-print(test_vector)
 #%% Build a CPPN 
 # Lets start with a CPPN in a 1 dimensional plane. 
 x_axis = 9
@@ -107,16 +99,58 @@ for n in range(3):
 
 #%% Network code 
 from cppn import CPPN
+import numpy as np
+import copy
 tr_names = ['sin', 'cos', 'sawtooth']
+
+num_sensors = 9
+num_hidden = 4
+num_of_legs = 6
+knees = 2
+
+test_vector = [np.zeros((num_sensors, num_hidden)), \
+    np.zeros((num_hidden, num_hidden - 1)),
+    np.zeros((num_hidden, num_of_legs, knees))]
 
 kwargs = {}
 kwargs['funcs'] = tr_names
 sample = CPPN(**kwargs)
 sample.paint(1, 2, 3)
 
-for x in range(100):
-    print(sample.paint(x, x * 2, x /3))
 
+
+vec = test_vector
+print(vec)
+
+for x in range(len(vec[0])):
+    for y in range(len(vec[0][0])):
+        test_vector[0][x][y] = sample.paint(1, x, y)
+for x in range(len(vec[1])):
+    for y in range(len(vec[1][0])):
+        test_vector[1][x][y] = sample.paint(2, x, y)
+for j in range(len(vec[2])):
+    for x in range(len(vec[2][0])):
+        for y in range(len(vec[2][0][0])):
+            test_vector[2][j][x][y] = sample.paint(3, x, y, j=j)
+
+# print(vec)
+
+
+#%%
+test1 = np.random.rand(3)
+test2 = np.random.rand(3)
+print(test1)
+print(test2)
+print(test1 - test2)
+print(vec)
+for x in range(3):
+    sample.mutate()
+    diff = []
+    for n in range(len(vec)):
+        print(sample.paint_weights(vec)[n])
+        diff.append(vec[n] - sample.paint_weights(vec)[n])
+
+    print(diff)
 
 
 #%%

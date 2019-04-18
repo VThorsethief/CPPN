@@ -1,6 +1,6 @@
 import numpy as np 
 from scipy import signal
-from tools import normalize
+from cppn.CPPN.tools import normalize
 class FNUER:
     def __init__(self, coefficient, multiplier, method):
         self.coefficient = coefficient
